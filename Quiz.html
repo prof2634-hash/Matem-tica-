@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Matemática · Sustentabilidade · Tecnologia</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+:root{
+  --ink:#16241C;
+  --paper:#EFEAD8;
+  --paper-dim:#E4DEC8;
+  --moss:#2E7D32;
+  --moss-dark:#1B5E20;
+  --danger:#C62828;
+  --danger-dark:#B71C1C;
+  --clay:#B5652D;
+  --gold:#FFC107;
+  --sky:#4E7A8C;
+  --terra:#7C5A3A;
+  --line:#c9c1a4;
+  --radius:12px;
+  --shadow:0 4px 12px rgba(0,0,0,.08);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{min-height:100vh;}
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:'Inter',sans-serif;
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:900px;margin:0 auto;padding:20px 20px 60px;}
+
+.tela { display: none; }
+.tela.ativa { display: block; animation: telaEntra .35s ease; }
+@keyframes telaEntra{ from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:translateY(0);} }
+
+.masthead{
+  border-bottom:2px solid var(--ink);
+  padding:30px 0 20px;
+  margin-bottom:10px;
+}
+.logo-row{
+  display:flex;align-items:center;gap:14px;margin-bottom:12px;
+  flex-wrap:wrap;justify-content:center;
+}
+.logo-slot{
+  width:60px;height:60px;border-radius:50%;border:2px dashed var(--ink);
+  background:var(--paper-dim);display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:.2s ease;flex-shrink:0;
+}
+.logo-slot:hover{border-style:solid;background:#fff;}
+.logo-slot img{width:100%;height:100%;object-fit:contain;}
+.logo-slot span{font-family:'IBM Plex Mono',monospace;font-size:9px;text-align:center;padding:4px;}
+
+.stamp-container{
+  width:100%;background:#121212;color:#fff;padding:14px 16px;
+  border-radius:8px;text-align:center;margin-bottom:20px;
+  border:1px solid #333;
+}
+.stamp-main{
+  font-family:'IBM Plex Mono',monospace;font-size:13px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--gold);font-weight:700;
+  margin-bottom:8px;
+}
+.stamp-identificacao{
+  font-family:'Inter',sans-serif;font-size:15px;
+  color:#f0f0f0;line-height:1.5;
+}
+.stamp-identificacao strong{color:#fff;font-weight:600;}
+
+h1{
+  font-family:'Fraunces',serif;font-weight:700;
+  font-size:clamp(26px,5vw,36px);line-height:1.2;margin:20px 0 8px;
+  text-align:center;color:var(--moss-dark);
+}
+.subtitulo{
+  font-family:'Inter',sans-serif;font-weight:500;
+  font-size:clamp(16px,3vw,18px);color:var(--moss);
+  text-align:center;margin:0 0 24px;
+}
+
+.som-toggle{
+  text-align:center;margin-bottom:18px;
+}
+.som-btn{
+  background:transparent;border:2px solid var(--line);border-radius:24px;
+  padding:8px 18px;cursor:pointer;font-size:15px;transition:.2s;
+  font-weight:500;
+}
+.som-btn.ativo{border-color:var(--moss);background:#e8f5e9;color:var(--moss-dark);}
+.som-btn:hover{border-color:var(--ink);}
+
+.qr-container{
+  display:flex;flex-direction:column;align-items:center;gap:12px;
+  background:#fff;padding:24px;border:2px solid var(--ink);border-radius:var(--radius);
+  margin:24px 0;max-width:300px;margin-left:auto;margin-right:auto;
+  box-shadow:var(--shadow);
+}
+.qr-box{
+  width:180px;height:180px;background:var(--paper-dim);border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  border:2px dashed var(--line);
+}
+.qr-texto{
+  font-size:14px;text-align:center;line-height:1.5;
+}
+.qr-actions{display:flex;gap:8px;}
+.qr-action-btn{
+  font-family:'IBM Plex Mono',monospace;font-size:11.5px;
+  background:transparent;border:1.5px solid var(--ink);border-radius:16px;
+  padding:6px 12px;cursor:pointer;transition:.15s ease;
+}
+.qr-action-btn:hover{background:var(--paper-dim);}
+.qr-action-btn:active{transform:scale(.96);}
+
+.meta-row{
+  display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;
+  font-family:'IBM Plex Mono',monospace;font-size:12px;justify-content:center;
+}
+.meta-chip{border:1px solid var(--ink);padding:6px 12px;border-radius:20px;font-weight:500;}
+.meta-chip.c-terra{background:var(--terra);color:#fff;}
+.meta-chip.c-moss{background:var(--moss);color:#fff;}
+.meta-chip.c-sky{background:var(--sky);color:#fff;}
+.meta-chip.c-gold{background:var(--gold);color:#333;}
+
+.btn-avancar{
+  width:100%;padding:16px;font-size:18px;font-weight:bold;
+  background:linear-gradient(135deg, var(--moss), var(--moss-dark));color:white;border:none;border-radius:var(--radius);
+  cursor:pointer;transition:.2s ease;margin-top:20px;
+  box-shadow:0 6px 16px rgba(27,94,32,.3);
+}
+.btn-avancar:hover{transform:translateY(-2px);box-shadow:0 10px 22px rgba(27,94,32,.4);}
+.btn-avancar:active{transform:translateY(0);box-shadow:0 3px 8px rgba(27,94,32,.3);}
+.btn-secundario{
+  width:100%;padding:14px;font-size:16px;font-weight:600;
+  background:transparent;color:var(--ink);border:2px solid var(--ink);border-radius:var(--radius);
+  cursor:pointer;transition:.2s ease;margin-top:12px;
+}
+.btn-secundario:hover{background:var(--paper-dim);}
+.btn-secundario:active{transform:scale(.98);}
+
+.titulo-eixos{
+  font-family:'Fraunces',serif;font-size:22px;font-weight:600;
+  text-align:center;margin-bottom:20px;padding-bottom:10px;
+  border-bottom:2px solid var(--line);
+}
+.eixos-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px;margin-bottom:20px;
+}
+.eixo-btn{
+  padding:14px 16px;border:2px solid var(--ink);border-radius:var(--radius);
+  background:var(--paper-dim);cursor:pointer;transition:.2s ease;text-align:left;
+  font-size:15px;line-height:1.4;
+}
+.eixo-btn:hover{background:#fff;transform:translateY(-3px);box-shadow:0 10px 20px rgba(22,36,28,.12);}
+.eixo-btn:active{transform:translateY(-1px);}
+.eixo-btn .etiqueta{display:block;font-weight:600;margin-bottom:2px;}
+.eixo-btn .codigo{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--sky);font-weight:600;}
+.eixo-btn .conteudo{font-size:13px;opacity:.85;margin-top:4px;}
+.eixo-btn .remover{float:right;font-size:18px;color:var(--danger);cursor:pointer;border:none;background:none;padding:0 4px;line-height:1;}
+
+.btn-revisar{
+  width:100%;padding:12px;border:2px dashed var(--ink);border-radius:var(--radius);
+  background:transparent;cursor:pointer;font-size:15px;font-weight:500;
+  margin-bottom:24px;transition:.2s ease;
+}
+.btn-revisar:hover{background:var(--paper-dim);border-style:solid;}
+.voltar-btn{
+  padding:12px 24px;font-size:15px;background:transparent;border:2px solid var(--ink);
+  border-radius:var(--radius);cursor:pointer;transition:.2s ease;
+}
+.voltar-btn:hover{background:var(--paper-dim);}
+
+.form-container{
+  background:#fff;padding:24px;border:2px solid var(--ink);border-radius:var(--radius);
+  margin-bottom:24px;box-shadow:var(--shadow);
+}
+.form-container h3{
+  font-family:'Fraunces',serif;font-size:18px;margin-bottom:16px;color:var(--moss-dark);
+}
+.grupo-form{margin-bottom:14px;}
+.grupo-form label{
+  display:block;font-weight:600;margin-bottom:6px;font-size:14px;
+}
+.grupo-form input, .grupo-form textarea, .grupo-form select{
+  width:100%;padding:10px 12px;border:2px solid var(--line);border-radius:8px;
+  font-size:15px;font-family:'Inter',sans-serif;background:var(--paper);
+}
+.grupo-form input:focus, .grupo-form textarea:focus, .grupo-form select:focus{
+  outline:none;border-color:var(--moss);background:#fff;
+}
+.grupo-form textarea{resize:vertical;min-height:80px;}
+.btn-adicionar{
+  width:100%;padding:14px;font-size:16px;font-weight:bold;
+  background:var(--gold);color:#333;border:none;border-radius:var(--radius);
+  cursor:pointer;transition:.2s ease;margin-top:8px;
+}
+.btn-adicionar:hover{background:#ffb300;transform:translateY(-1px);}
+.btn-cinza{
+  background:var(--line);color:var(--ink);margin-right:8px;
+}
+.btn-cinza:hover{background:#b9b090;}
+.aviso{
+  background:#e3f2fd;border-left:4px solid var(--sky);padding:12px;border-radius:4px;margin:12px 0;
+  font-size:14px;
+}
+
+.cabecalho-quiz{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:20px;padding-bottom:12px;border-bottom:2px solid var(--line);
+  flex-wrap:wrap;gap:10px;
+}
+.nome-eixo{font-family:'Fraunces',serif;font-size:18px;font-weight:600;}
+.codigo-bncc{font-family:'IBM Plex Mono',monospace;font-size:13px;background:var(--sky);color:#fff;padding:2px 8px;border-radius:4px;}
+.progresso{text-align:right;font-size:14px;}
+.barra-progresso{
+  width:100%;height:12px;background:var(--paper-dim);border-radius:6px;
+  margin-bottom:20px;overflow:hidden;
+}
+.preenchimento{height:100%;background:var(--moss);width:0%;transition:.4s ease;}
+.questao-box{
+  background:#fff;padding:24px;border:2px solid var(--ink);border-radius:var(--radius);
+  margin-bottom:20px;box-shadow:var(--shadow);
+}
+.texto-questao{font-size:18px;line-height:1.6;margin-bottom:24px;font-weight:500;}
+
+.alternativa{
+  display:block;width:100%;padding:16px 16px;border:2px solid #ddd;border-radius:10px;
+  margin-bottom:12px;cursor:pointer;transition:.15s ease;font-size:16px;
+  background:#fff;font-family:'Inter',sans-serif;text-align:left;color:var(--ink);
+}
+.alternativa:hover:not(:disabled){border-color:#999;background:#f9f6ec;}
+.alternativa:active:not(:disabled){transform:scale(.99);}
+.alternativa:focus-visible{outline:2px solid var(--sky);outline-offset:2px;}
+.alternativa:disabled{cursor:default;}
+.alternativa.correta{
+  border-color:var(--moss-dark);
+  background:#c8e6c9;
+  border-width:3px;
+  font-weight:700;
+  color:var(--moss-dark);
+}
+.alternativa.errada{
+  border-color:var(--danger-dark);
+  background:#ffcdd2;
+  border-width:3px;
+  font-weight:700;
+  color:var(--danger-dark);
+}
+
+.feedback{
+  padding:18px 20px;border-radius:10px;margin:20px 0;display:none;font-weight:600;
+  font-size:17px;line-height:1.6;border-left:5px solid;
+}
+.feedback.certo{
+  background:#c8e6c9;
+  border-color:var(--moss-dark);
+  color:var(--moss-dark);
+  display:block;
+}
+.feedback.errado{
+  background:#ffcdd2;
+  border-color:var(--danger-dark);
+  color:var(--danger-dark);
+  display:block;
+}
+
+.botoes-quiz{display:flex;gap:12px;justify-content:space-between;flex-wrap:wrap;}
+.btn-prox{
+  padding:12px 24px;font-size:15px;font-weight:bold;border:none;border-radius:var(--radius);
+  background:var(--moss);color:white;cursor:pointer;transition:.2s ease;
+}
+.btn-prox:hover{background:var(--moss-dark);}
+.btn-prox:disabled{opacity:.5;cursor:not-allowed;}
+
+.resultado-box{
+  background:#fff;padding:30px;border:2px solid var(--ink);border-radius:var(--radius);
+  text-align:center;margin-top:20px;box-shadow:var(--shadow);
+}
+.score-ring-wrap{display:flex;justify-content:center;margin:10px 0 6px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="tela ativa" id="tela1">
+  <div class="masthead">
+    <div class="logo-row">
+      <button class="logo-slot" id="logoSlot" title="Clique para adicionar o logo da escola">
+        <img id="logoImg" style="display:none;" alt="Logo da Escola">
+        <span id="logoPlaceholder">LOGO<br>ESCOLA</span>
+      </button>
+      <input type="file" id="logoInput" accept="image/*" style="display:none;">
+    </div>
+
+    <div class="stamp-container">
+      <div class="stamp-main">📐 PROJETO INTERDISCIPLINAR</div>
+      <div class="stamp-identificacao">
+        <strong>Prof. Francijone</strong> &nbsp;|&nbsp; 6º Ano A e B
+      </div>
+    </div>
+
+    <h1>Matemática · Sustentabilidade · Tecnologia</h1>
+    <p class="subtitulo">Desafios que desenvolvem o conhecimento!</p>
+
+    <div class="som-toggle">
+      <button class="som-btn ativo" id="somBtn" onclick="alternarSom()">🔊 Som: LIGADO</button>
+    </div>
+
+    <div class="qr-container">
+      <div class="qr-box" id="qrBox">
+        <div style="text-align:center; padding:10px;">
+          <div style="font-size:40px; margin-bottom:8px;">📱</div>
+          <div style="font-size:13px; color:#666;">Disponível em breve<br>para os alunos!</div>
+        </div>
+      </div>
+      <div class="qr-texto" id="qrTexto">
+        <strong>Em breve: escaneie e pratique de casa!</strong>
+      </div>
+      <div class="qr-actions">
+        <button class="qr-action-btn" id="btnCopiarLink" type="button">🔗 Copiar link</button>
+        <button class="qr-action-btn" id="btnBaixarQR" type="button">⬇️ Baixar QR</button>
+      </div>
+    </div>
+
+    <div class="meta-row">
+      <span class="meta-chip c-terra">Ensino Fundamental</span>
+      <span class="meta-chip c-moss">Alinhado à BNCC</span>
+      <span class="meta-chip c-sky" id="totalEixos">8 Eixos + Personalizados</span>
+      <span class="meta-chip c-gold" id="totalQuestoesChip">66+ Problemas</span>
+    </div>
+
+    <button class="btn-avancar" onclick="irPara('tela2')">COMEÇAR O QUIZ 🚀</button>
+    <button class="btn-secundario" onclick="irPara('telaAdicionar')">➕ ADICIONAR NOVA HABILIDADE BNCC</button>
+  </div>
+</div>
+
+<div class="tela" id="telaAdicionar">
+  <h2 class="titulo-eixos">➕ Adicionar Nova Habilidade BNCC</h2>
+  
+  <div class="form-container">
+    <div class="aviso">
+      💡 <strong>Como funciona:</strong> Preencha os dados abaixo e a nova habilidade aparecerá automaticamente na lista de conteúdos! Fica salva no próprio aplicativo.
+    </div>
+    
+    <div class="grupo-form">
+      <label>🔢 Código da Habilidade (ex: H08, MA06, etc.)</label>
+      <input type="text" id="novoCodigo" placeholder="Ex: H08">
+    </div>
+    
+    <div class="grupo-form">
+      <label>📝 Nome / Título da Habilidade</label>
+      <input type="text" id="novoNome" placeholder="Ex: Frações e Números Decimais">
+    </div>
+    
+    <div class="grupo-form">
+      <label>📄 Descrição do Conteúdo</label>
+      <textarea id="novoConteudo" placeholder="Ex: Operações com frações, comparação, conversão para decimais..."></textarea>
+    </div>
+    
+    <div class="grupo-form">
+      <label>❓ Quantas questões deseja adicionar?</label>
+      <select id="qtdQuestoes" onchange="gerenciarCamposQuestoes()">
+        <option value="3">3 questões</option>
+        <option value="5" selected>5 questões</option>
+        <option value="7">7 questões</option>
+        <option value="10">10 questões</option>
+      </select>
+    </div>
+    
+    <div id="containerQuestoes"></div>
+    
+    <div style="display:flex;gap:10px;margin-top:20px;">
+      <button class="btn-secundario btn-cinza" onclick="irPara('tela2')">← Cancelar</button>
+      <button class="btn-adicionar" onclick="salvarNovaHabilidade()">✅ SALVAR HABILIDADE</button>
+    </div>
+  </div>
+</div>
+
+<div class="tela" id="tela2">
+  <h2 class="titulo-eixos">📚 Escolha uma habilidade para praticar</h2>
+
+  <div class="eixos-grid" id="listaEixos"></div>
+
+  <button class="btn-revisar" onclick="irPara('telaAdicionar')">➕ ADICIONAR NOVA HABILIDADE BNCC</button>
+  <button class="voltar-btn" onclick="irPara('tela1')">← Voltar à tela inicial</button>
+</div>
+
+<div class="tela" id="tela3">
+  <div class="cabecalho-quiz">
+    <span class="nome-eixo" id="nomeEixoAtual">H06 — Divisibilidade e Números Primos</span>
+    <span class="codigo-bncc" id="codigoBNCC">H06</span>
+    <span class="progresso" id="contadorQuestao">Questão 1 / 6</span>
+  </div>
+
+  <div class="barra-progresso">
+    <div class="preenchimento" id="barraProgresso"></div>
+  </div>
+
+  <div class="questao-box">
+    <p class="texto-questao" id="textoQuestao">Carregando questão...</p>
+    <div id="listaAlternativas"></div>
+    <div class="feedback" id="feedback"></div>
+  </div>
+
+  <div class="botoes-quiz">
+    <button class="btn-secundario" onclick="reiniciarEixo()">🔄 Reiniciar</button>
+    <button class="btn-prox" id="btnProxima" onclick="proximaQuestao()" style="display:none;">Próxima →</button>
+  </div>
+
+  <button class="btn-secundario" style="margin-top:20px;" onclick="irPara('tela2')">← Escolher outro conteúdo</button>
+</div>
+
+<div class="tela" id="tela4">
+  <div class="resultado-box">
+    <h2>Desempenho final</h2>
+    <div class="score-ring-wrap">
+      <svg width="168" height="168" viewBox="0 0 168 168">
+        <circle cx="84" cy="84" r="68" fill="none" stroke="var(--paper-dim)" stroke-width="13"/>
+        <circle id="scoreRing" cx="84" cy="84" r="68" fill="none" stroke="var(--moss)" stroke-width="13"
+                stroke-linecap="round" transform="rotate(-90 84 84)"
+                stroke-dasharray="427.3" stroke-dashoffset="427.3" style="transition:stroke-dashoffset 1s ease .15s;"/>
+        <text x="84" y="78" text-anchor="middle" font-family="Fraunces" font-weight="700" font-size="34" fill="var(--ink)" id="scorePctText">0%</text>
+        <text x="84" y="102" text-anchor="middle" font-family="IBM Plex Mono" font-size="13" fill="#5a5a48"><tspan id="totalAcertos">0</tspan> de <tspan id="totalQuestoes">0</tspan></text>
+      </svg>
+    </div>
+    <p id="mensagemFinal">Continue praticando!</p>
+  </div>
+
+  <div class="botoes-quiz" style="margin-top:30px;justify-content:center;">
+    <button class="btn-secundario" onclick="irPara('tela2')">📚 Escolher outro conteúdo</button>
+    <button class="btn-prox" onclick="reiniciarEixo()">🔄 Refazer este conteúdo</button>
+  </div>
+</div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+<script>
+let somAtivo = true;
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+document.addEventListener('click', function unlockAudio() {
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+}, { once: true });
+
+document.getElementById('btnCopiarLink').onclick = () => {
+  navigator.clipboard.writeText(window.location.href).then(() => {
+    const btn = document.getElementById('btnCopiarLink');
+    const old = btn.textContent;
+    btn.textContent = '✅ Copiado!';
+    setTimeout(() => btn.textContent = old, 1500);
+  }).catch(() => alert('Não foi possível copiar automaticamente. Copie o link da barra de endereço.'));
+};
+document.getElementById('btnBaixarQR').onclick = () => {
+  const canvas = document.querySelector('#qrBox canvas');
+  if (!canvas) { alert('Publique esta página on-line primeiro — o QR Code é gerado a partir do link publicado.'); return; }
+  const a = document.createElement('a');
+  a.href = canvas.toDataURL('image/png');
+  a.download = 'qrcode-quiz-matematica.png';
+  a.click();
+};
+
+function atualizarContadores() {
+  const todos = todosEixos();
+  const nEixos = Object.keys(todos).length;
+  let nQuestoes = 0;
+  Object.values(todos).forEach(e => nQuestoes += (e.questoes ? e.questoes.length : 0));
+  const elE = document.getElementById('totalEixos');
+  const elQ = document.getElementById('totalQuestoesChip');
+  if (elE) elE.textContent = `${nEixos} eixos de estudo`;
+  if (elQ) elQ.textContent = `${nQuestoes} problemas contextualizados`;
+}
+
+function tocarSomAcerto() {
+  if (!somAtivo) return;
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  osc.connect(gain); gain.connect(audioCtx.destination);
+  osc.frequency.setValueAtTime(523.25, audioCtx.currentTime);
+  osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.1);
+  osc.frequency.setValueAtTime(783.99, audioCtx.currentTime + 0.2);
+  gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
+  osc.start(audioCtx.currentTime);
+  osc.stop(audioCtx.currentTime + 0.4);
+}
+
+function tocarSomErro() {
+  if (!somAtivo) return;
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  osc.connect(gain); gain.connect(audioCtx.destination);
+  osc.type = 'sawtooth';
+  osc.frequency.setValueAtTime(200, audioCtx.currentTime);
+  osc.frequency.setValueAtTime(150, audioCtx.currentTime + 0.15);
+  gain.gain.setValueAtTime(0.25, audioCtx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.35);
+  osc.start(audioCtx.currentTime);
+  osc.stop(audioCtx.currentTime + 0.35);
+}
+
+function alternarSom() {
+  somAtivo = !somAtivo;
+  const btn = document.getElementById('somBtn');
+  if (somAtivo) {
+    btn.textContent = '🔊 Som: LIGADO';
+    btn.classList.add('ativo');
+  } else {
+    btn.textContent = '🔇 Som: DESLIGADO';
+    btn.classList.remove('ativo');
+  }
+}
+
+window.addEventListener('load', function() {
+  const linkAtual = window.location.href;
+  const qrBox = document.getElementById('qrBox');
+  const qrTexto = document.getElementById('qrTexto');
+  if (linkAtual.startsWith('http')) {
+    qrBox.innerHTML = '';
+    QRCode.toCanvas(linkAtual, { width: 160, margin: 1 }, function (error, canvas) {
+      if (error) return;
+      canvas.style.borderRadius = '6px';
+      qrBox.appendChild(canvas);
+      if (qrTexto) qrTexto.innerHTML = '<strong>Aponte a câmera do celular para acessar o quiz.</strong>';
+    });
+  } else if (qrTexto) {
+    qrTexto.innerHTML = '<strong>Publique esta página on-line (ex.: GitHub Pages) para o QR Code aparecer aqui automaticamente.</strong>';
+  }
+  carregarEixosNaLista();
+  atualizarContadores();
+});
+
+function irPara(idTela) {
+  document.querySelectorAll('.tela').forEach(t => t.classList.remove('ativa'));
+  document.getElementById(idTela).classList.add('ativa');
+  window.scrollTo(0,0);
+  if (idTela === 'tela2') carregarEixosNaLista();
+  if (idTela === 'telaAdicionar') gerenciarCamposQuestoes();
+}
+
+const logoSlot = document.getElementById('logoSlot');
+const logoInput = document.getElementById('logoInput');
+const logoImg = document.getElementById('logoImg');
+const logoPlaceholder = document.getElementById('logoPlaceholder');
+
+logoSlot.onclick = () => logoInput.click();
+logoInput.onchange = (e) => {
+  const arq = e.target.files[0];
+  if (!arq) return;
+  const leitor = new FileReader();
+  leitor.onload = (ev) => {
+    logoImg.src = ev.target.result;
+    logoImg.style.display = 'block';
+    logoPlaceholder.style.display = 'none';
+  };
+  leitor.readAsDataURL(arq);
+};
+
+const eixosFixos = {
+  h06: {
+    nome: "🔢 Divisibilidade e Números Primos",
+    codigo: "Extra 1",
+    descricao: "Identificar números primos, critérios de divisibilidade e decomposição em fatores primos",
+    questoes: [
+      { pergunta: "Qual destes números é primo?", alternativas: ["12", "17", "21", "25"], correta: 1 },
+      { pergunta: "O número 36 é divisível por 3. Por quê?", alternativas: ["É par", "A soma dos algarismos é divisível por 3", "Termina em 6", "É menor que 50"], correta: 1 },
+      { pergunta: "Quantos números primos existem entre 1 e 10?", alternativas: ["2 números", "3 números", "4 números", "5 números"], correta: 2 },
+      { pergunta: "Qual é a decomposição em fatores primos do número 12?", alternativas: ["2 × 6", "3 × 4", "2² × 3", "2 × 2 × 3 × 1"], correta: 2 },
+      { pergunta: "Qual destes NÃO é primo?", alternativas: ["2", "3", "9", "11"], correta: 2 },
+      { pergunta: "Um número primo tem quantos divisores?", alternativas: ["Apenas 1", "Exatamente 2", "3 ou mais", "Depende do número"], correta: 1 },
+      { pergunta: "O número 1 é considerado primo?", alternativas: ["Sim, sempre", "Não, tem apenas um divisor", "Sim, porque é ímpar", "Só em alguns casos"], correta: 1 },
+      { pergunta: "Qual é o menor número primo que existe?", alternativas: ["0", "1", "2", "3"], correta: 2 },
+      { pergunta: "O número 51 é primo ou composto? (Dica: 51 = 3 × 17)", alternativas: ["Primo", "Composto", "Nem primo nem composto", "Impossível saber"], correta: 1 },
+      { pergunta: "Quantos divisores tem o número 30? (1, 2, 3, 5, 6, 10, 15, 30)", alternativas: ["6", "7", "8", "9"], correta: 2 }
+    ]
+  },
+  h07: {
+    nome: "📐 MMC e MDC em Situações-Problema",
+    codigo: "Extra 2",
+    descricao: "Resolver problemas envolvendo mínimo múltiplo comum e máximo divisor comum",
+    questoes: [
+      { pergunta: "Dois ônibus partem de um terminal juntos. Um passa a cada 10 minutos, o outro a cada 15 minutos. Depois de quantos minutos voltam a se encontrar?", alternativas: ["20 min", "30 min", "45 min", "60 min"], correta: 1 },
+      { pergunta: "O MDC de 12 e 18 é:", alternativas: ["3", "6", "9", "36"], correta: 1 },
+      { pergunta: "O MMC de 4 e 6 é:", alternativas: ["8", "12", "24", "36"], correta: 1 },
+      { pergunta: "Queremos dividir 24 cadernos e 36 lápis em pacotes iguais, com o maior número possível de alunos. Quantos alunos?", alternativas: ["6 alunos", "9 alunos", "12 alunos", "18 alunos"], correta: 2 },
+      { pergunta: "Uma luz pisca a cada 8 segundos, outra a cada 12 segundos. Juntas, piscam de novo após:", alternativas: ["16 s", "24 s", "36 s", "48 s"], correta: 1 },
+      { pergunta: "O MDC representa o ____ divisor comum.", alternativas: ["menor", "maior", "múltiplo", "médio"], correta: 1 },
+      { pergunta: "O MMC representa o ____ múltiplo comum.", alternativas: ["menor", "maior", "primeiro", "último"], correta: 0 },
+      { pergunta: "O MDC de 20 e 30 é:", alternativas: ["5", "10", "15", "20"], correta: 1 },
+      { pergunta: "O MMC de 5 e 8 é:", alternativas: ["13", "20", "40", "45"], correta: 2 },
+      { pergunta: "Duas torneiras de reuso de água pingam: uma a cada 6 segundos, outra a cada 9 segundos. De quanto em quanto tempo elas pingam juntas?", alternativas: ["12 s", "15 s", "18 s", "24 s"], correta: 2 }
+    ]
+  },
+  h12: {
+    nome: "📏 Perímetro e Área de Figuras Planas",
+    codigo: "Extra 3",
+    descricao: "Calcular perímetro e área de triângulos, retângulos, quadrados e trapézios",
+    questoes: [
+      { pergunta: "Um jardim quadrado tem lado de 6 metros. Qual é o seu perímetro?", alternativas: ["12 m", "20 m", "24 m", "36 m"], correta: 2 },
+      { pergunta: "Um terreno retangular tem 10 m de comprimento e 5 m de largura. Qual é a sua área?", alternativas: ["15 m²", "30 m²", "50 m²", "60 m²"], correta: 2 },
+      { pergunta: "Um triângulo tem base de 8 cm e altura de 5 cm. Qual é a sua área?", alternativas: ["13 cm²", "20 cm²", "40 cm²", "80 cm²"], correta: 1 },
+      { pergunta: "Qual fórmula calcula a área de um retângulo?", alternativas: ["lado + lado", "comprimento × largura", "base × altura ÷ 2", "lado × 4"], correta: 1 },
+      { pergunta: "Uma sala tem formato quadrado com perímetro de 20 metros. Qual é a medida de cada lado?", alternativas: ["4 m", "5 m", "10 m", "80 m"], correta: 1 },
+      { pergunta: "Um retângulo tem 12 cm de comprimento e 8 cm de largura. Seu perímetro é:", alternativas: ["20 cm", "40 cm", "48 cm", "96 cm"], correta: 1 },
+      { pergunta: "Para calcular a quantidade de piso de uma sala, precisamos saber o(a):", alternativas: ["Perímetro", "Área", "Diagonal", "Perímetro e Área"], correta: 1 },
+      { pergunta: "Uma horta trapezoidal tem bases de 10 m e 6 m, e altura de 4 m. Qual é a sua área? (Área do trapézio = (Base maior + Base menor) × altura ÷ 2)", alternativas: ["32 m²", "36 m²", "40 m²", "64 m²"], correta: 0 },
+      { pergunta: "Um campo tem 40 m de comprimento por 20 m de largura. Quantos metros de corda são necessários para cercar todo o perímetro?", alternativas: ["60 m", "100 m", "120 m", "800 m"], correta: 2 },
+      { pergunta: "Uma praça circular tem 7 m de raio. Usando π ≈ 22/7, qual é, aproximadamente, sua área?", alternativas: ["44 m²", "154 m²", "198 m²", "220 m²"], correta: 1 }
+    ]
+  },
+  agua: {
+    nome: "💧 Água — Porcentagem e Proporção",
+    codigo: "Geral",
+    descricao: "Relacionar consumo e economia de água com porcentagem",
+    questoes: [
+      { pergunta: "Uma caixa d'água de 2.000 L está com 30% cheia. Quantos litros há?", alternativas: ["300 L", "500 L", "600 L", "800 L"], correta: 2 },
+      { pergunta: "De 500 L, foram gastos 15%. Quantos litros?", alternativas: ["50 L", "75 L", "100 L", "150 L"], correta: 1 },
+      { pergunta: "O consumo caiu de 10.000 L para 8.500 L. Redução percentual?", alternativas: ["10%", "15%", "20%", "25%"], correta: 1 },
+      { pergunta: "4 baldes têm 48 L. Quantos litros em 7 baldes?", alternativas: ["72 L", "84 L", "96 L", "108 L"], correta: 1 },
+      { pergunta: "Conta de R$ 120,00 com aumento de 8%. Novo valor?", alternativas: ["R$ 125,00", "R$ 128,60", "R$ 129,60", "R$ 130,00"], correta: 2 },
+      { pergunta: "Uma cisterna armazena 1.500 L de água da chuva. Se 40% já foram usados na horta, quantos litros ainda restam?", alternativas: ["600 L", "700 L", "900 L", "1.000 L"], correta: 2 },
+      { pergunta: "Uma torneira comum gasta 12 L por minuto. Um arejador reduz esse gasto para 6 L por minuto. Qual foi a economia percentual?", alternativas: ["25%", "40%", "50%", "60%"], correta: 2 },
+      { pergunta: "Uma escola reduziu seu consumo de água de 8.000 L para 6.400 L por mês. Qual foi a redução percentual?", alternativas: ["10%", "15%", "20%", "25%"], correta: 2 }
+    ]
+  },
+  energia: {
+    nome: "⚡ Energia — Regra de Três",
+    codigo: "Geral",
+    descricao: "Cálculo de consumo e economia de energia elétrica",
+    questoes: [
+      { pergunta: "Uma lâmpada gasta 15 W por hora. Em 24 horas consome:", alternativas: ["300 W", "360 W", "400 W", "450 W"], correta: 1 },
+      { pergunta: "4 lâmpadas gastam 60 W. 7 lâmpadas gastam:", alternativas: ["90 W", "105 W", "120 W", "135 W"], correta: 1 },
+      { pergunta: "Um aparelho consome 2 kWh em 5 horas. Em 12 horas:", alternativas: ["3,8 kWh", "4,2 kWh", "4,8 kWh", "5,2 kWh"], correta: 2 },
+      { pergunta: "Lâmpada incandescente 60 W vs LED 15 W. Economia %?", alternativas: ["25%", "50%", "75%", "85%"], correta: 2 },
+      { pergunta: "Uma usina eólica gera 900 kWh em 6 horas de vento forte. Mantendo o ritmo, quanto gera em 10 horas?", alternativas: ["1.200 kWh", "1.350 kWh", "1.500 kWh", "1.800 kWh"], correta: 2 },
+      { pergunta: "Uma geladeira eficiente consome 35 kWh por mês, enquanto o modelo antigo consumia 70 kWh. Qual a redução percentual?", alternativas: ["25%", "50%", "65%", "75%"], correta: 1 },
+      { pergunta: "O kWh custa R$ 0,75. Uma família consome 180 kWh no mês. Qual o valor da conta?", alternativas: ["R$ 105,00", "R$ 120,00", "R$ 135,00", "R$ 150,00"], correta: 2 }
+    ]
+  },
+  residuos: {
+    nome: "🗑️ Resíduos — Estatística e Dados",
+    codigo: "Geral",
+    descricao: "Coleta seletiva, gráficos e tabelas de resíduos",
+    questoes: [
+      { pergunta: "120 kg papel + 80 kg plástico + 50 kg vidro. Total?", alternativas: ["230 kg", "250 kg", "270 kg", "300 kg"], correta: 0 },
+      { pergunta: "De 500 kg, 30% são recicláveis. Quantos kg?", alternativas: ["100 kg", "150 kg", "200 kg", "250 kg"], correta: 1 },
+      { pergunta: "25 alunos separam lixo, 15 não. % que separa?", alternativas: ["40%", "50%", "62,5%", "75%"], correta: 2 },
+      { pergunta: "200 kg de resíduos, 1/4 é papel. Quantos kg de papel?", alternativas: ["40 kg", "50 kg", "60 kg", "80 kg"], correta: 1 },
+      { pergunta: "Uma campanha juntou recicláveis durante 4 semanas: 20 kg, 35 kg, 25 kg e 40 kg. Qual foi a média semanal coletada?", alternativas: ["25 kg", "28 kg", "30 kg", "32 kg"], correta: 2 },
+      { pergunta: "De 80 kg de lixo coletado, 3/5 eram orgânicos. Quantos quilos eram orgânicos?", alternativas: ["32 kg", "40 kg", "48 kg", "56 kg"], correta: 2 },
+      { pergunta: "Numa turma de 32 alunos, 3/4 participam da coleta seletiva. Quantos alunos participam?", alternativas: ["16", "20", "24", "28"], correta: 2 }
+    ]
+  },
+  transporte: {
+    nome: "🚲 Transporte — Funções Afins",
+    codigo: "Geral",
+    descricao: "Velocidade, distância e custo de deslocamento",
+    questoes: [
+      { pergunta: "Carro percorre 90 km com 6 L. Com 10 L percorre:", alternativas: ["120 km", "135 km", "150 km", "180 km"], correta: 1 },
+      { pergunta: "Corrida: R$ 3,50 fixo + R$ 1,20/km. 10 km custa:", alternativas: ["R$ 12,00", "R$ 14,50", "R$ 15,50", "R$ 16,00"], correta: 1 },
+      { pergunta: "Cada km gasta R$ 0,80. 120 km custam:", alternativas: ["R$ 80,00", "R$ 90,00", "R$ 96,00", "R$ 100,00"], correta: 2 },
+      { pergunta: "Uma bicicleta percorre 15 km em 1 hora. Mantendo a velocidade, quanto percorre em 2h30min?", alternativas: ["30 km", "32,5 km", "35 km", "37,5 km"], correta: 3 },
+      { pergunta: "Um ônibus elétrico gasta R$ 0,60 por km rodado. Quanto custa uma viagem de 45 km?", alternativas: ["R$ 18,00", "R$ 24,00", "R$ 27,00", "R$ 30,00"], correta: 2 },
+      { pergunta: "Um carro a combustão emite, em média, 120 g de CO₂ por km. Quantos kg de CO₂ emite em uma viagem de 50 km?", alternativas: ["3 kg", "6 kg", "9 kg", "12 kg"], correta: 1 },
+      { pergunta: "Uma cidade quer reduzir em 30% as emissões de transporte, hoje em 2.000 toneladas/ano. Qual é a meta, em toneladas?", alternativas: ["1.200 t", "1.400 t", "1.600 t", "1.800 t"], correta: 1 }
+    ]
+  },
+  reforco: {
+    nome: "🟡 Reforço Geral",
+    codigo: "Geral",
+    descricao: "Revisão de conteúdos complementares",
+    questoes: [
+      { pergunta: "Próximo número: 2, 5, 8, 11, ___", alternativas: ["13", "14", "15", "16"], correta: 1 },
+      { pergunta: "Quantos cm há em 3,5 m?", alternativas: ["35 cm", "305 cm", "350 cm", "3.500 cm"], correta: 2 },
+      { pergunta: "O dobro de um número mais 5 é 25. O número é:", alternativas: ["8", "10", "12", "15"], correta: 1 },
+      { pergunta: "20 - 5 × 3 + 2 =", alternativas: ["17", "7", "32", "47"], correta: 1 },
+      { pergunta: "Complete a sequência: 3, 6, 12, 24, ___", alternativas: ["30", "36", "48", "60"], correta: 2 },
+      { pergunta: "Quantos gramas há em 2,75 kg?", alternativas: ["275 g", "2.075 g", "2.750 g", "27.500 g"], correta: 2 },
+      { pergunta: "O triplo de um número, menos 4, é igual a 20. Qual é esse número?", alternativas: ["6", "7", "8", "9"], correta: 2 }
+    ]
+  }
+};
+
+function getEixosSalvos() {
+  const salvos = localStorage.getItem('habilidadesBNCC');
+  return salvos ? JSON.parse(salvos) : {};
+}
+
+function salvarEixosSalvos(novos) {
+  localStorage.setItem('habilidadesBNCC', JSON.stringify(novos));
+}
+
+function todosEixos() {
+  return { ...eixosFixos, ...getEixosSalvos() };
+}
+
+function carregarEixosNaLista() {
+  const lista = document.getElementById('listaEixos');
+  lista.innerHTML = '';
+  const todos = todosEixos();
+  const salvos = getEixosSalvos();
+  
+  for (const [chave, eixo] of Object.entries(todos)) {
+    const btn = document.createElement('button');
+    btn.className = 'eixo-btn';
+    btn.onclick = () => selecionarEixo(chave);
+    
+    const ehSalvo = salvos[chave];
+    btn.innerHTML = `
+      <span class="etiqueta">${eixo.nome}</span>
+      <span class="codigo">Código BNCC: ${eixo.codigo}</span>
+      <span class="conteudo">${eixo.descricao || ''}</span>
+      ${ehSalvo ? `<span class="remover" onclick="event.stopPropagation(); removerHabilidade('${chave}')">🗑️</span>` : ''}
+    `;
+    lista.appendChild(btn);
+  }
+}
+
+function removerHabilidade(chave) {
+  if (!confirm('Deseja remover esta habilidade? Esta ação não pode ser desfeita.')) return;
+  const salvos = getEixosSalvos();
+  delete salvos[chave];
+  salvarEixosSalvos(salvos);
+  carregarEixosNaLista();
+  atualizarContadores();
+}
+
+function gerenciarCamposQuestoes() {
+  const container = document.getElementById('containerQuestoes');
+  const qtd = parseInt(document.getElementById('qtdQuestoes').value);
+  container.innerHTML = '';
+  
+  for (let i = 1; i <= qtd; i++) {
+    container.innerHTML += `
+      <div style="border-top:1px solid var(--line);padding:16px 0;margin-top:8px;">
+        <h4 style="margin-bottom:12px;color:var(--sky);">Questão ${i}</h4>
+        <div class="grupo-form">
+          <label>Enunciado da questão ${i}</label>
+          <textarea id="q${i}_pergunta" placeholder="Digite a pergunta ou situação-problema..."></textarea>
+        </div>
+        <div class="grupo-form">
+          <label>Alternativa A</label>
+          <input type="text" id="q${i}_a" placeholder="Resposta A">
+        </div>
+        <div class="grupo-form">
+          <label>Alternativa B</label>
+          <input type="text" id="q${i}_b" placeholder="Resposta B">
+        </div>
+        <div class="grupo-form">
+          <label>Alternativa C</label>
+          <input type="text" id="q${i}_c" placeholder="Resposta C">
+        </div>
+        <div class="grupo-form">
+          <label>Alternativa D</label>
+          <input type="text" id="q${i}_d" placeholder="Resposta D">
+        </div>
+        <div class="grupo-form">
+          <label>✅ Alternativa CORRETA</label>
+          <select id="q${i}_correta">
+            <option value="0">A</option>
+            <option value="1">B</option>
+            <option value="2">C</option>
+            <option value="3">D</option>
+          </select>
+        </div>
+      </div>
+    `;
+  }
+}
+
+function salvarNovaHabilidade() {
+  const codigo = document.getElementById('novoCodigo').value.trim().toUpperCase();
+  const nome = document.getElementById('novoNome').value.trim();
+  const descricao = document.getElementById('novoConteudo').value.trim();
+  const qtd = parseInt(document.getElementById('qtdQuestoes').value);
+  
+  if (!codigo || !nome) {
+    alert('⚠️ Preencha o Código e o Nome da habilidade!');
+    return;
+  }
+  
+  const chave = 'habilidade_' + codigo.replace(/\W/g, '_');
+  const salvos = getEixosSalvos();
+  
+  if (todosEixos()[chave] || todosEixos()[codigo.toLowerCase()]) {
+    alert('⚠️ Este código já existe! Use outro código.');
+    return;
+  }
+  
+  const questoes = [];
+  for (let i = 1; i <= qtd; i++) {
+    const pergunta = document.getElementById(`q${i}_pergunta`).value.trim();
+    const a = document.getElementById(`q${i}_a`).value.trim();
+    const b = document.getElementById(`q${i}_b`).value.trim();
+    const c = document.getElementById(`q${i}_c`).value.trim();
+    const d = document.getElementById(`q${i}_d`).value.trim();
+    const correta = parseInt(document.getElementById(`q${i}_correta`).value);
+    
+    if (!pergunta || !a || !b || !c || !d) {
+      alert(`⚠️ Preencha todos os campos da Questão ${i}!`);
+      return;
+    }
+    
+    questoes.push({ pergunta, alternativas: [a, b, c, d], correta });
+  }
+  
+  salvos[chave] = { nome, codigo, descricao, questoes };
+  salvarEixosSalvos(salvos);
+  
+  document.getElementById('novoCodigo').value = '';
+  document.getElementById('novoNome').value = '';
+  document.getElementById('novoConteudo').value = '';
+  document.getElementById('containerQuestoes').innerHTML = '';
+  
+  alert(`✅ Habilidade ${codigo} salva com sucesso! 🎉`);
+  atualizarContadores();
+  irPara('tela2');
+}
+
+let eixoAtual = null, indiceQuestao = 0, acertos = 0, respondido = false;
+
+function selecionarEixo(chave) {
+  eixoAtual = todosEixos()[chave];
+  if (!eixoAtual) return;
+  indiceQuestao = 0; acertos = 0; respondido = false;
+  document.getElementById('nomeEixoAtual').textContent = eixoAtual.nome;
+  document.getElementById('codigoBNCC').textContent = eixoAtual.codigo || 'Geral';
+  irPara('tela3');
+  carregarQuestao();
+}
+
+function carregarQuestao() {
+  if (!eixoAtual || indiceQuestao >= eixoAtual.questoes.length) {
+    mostrarResultado(); return;
+  }
+  respondido = false;
+  const q = eixoAtual.questoes[indiceQuestao];
+  document.getElementById('contadorQuestao').textContent = `Questão ${indiceQuestao + 1} / ${eixoAtual.questoes.length}`;
+  document.getElementById('barraProgresso').style.width = `${((indiceQuestao + 1) / eixoAtual.questoes.length) * 100}%`;
+  document.getElementById('textoQuestao').textContent = q.pergunta;
+  document.getElementById('feedback').className = 'feedback';
+  document.getElementById('feedback').style.display = 'none';
+  document.getElementById('btnProxima').style.display = 'none';
+  
+  const lista = document.getElementById('listaAlternativas');
+  lista.innerHTML = '';
+  q.alternativas.forEach((texto, i) => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'alternativa';
+    btn.innerHTML = `${String.fromCharCode(65 + i)}) ${texto}`;
+    btn.onclick = () => verificarResposta(i);
+    lista.appendChild(btn);
+  });
+}
+
+function verificarResposta(indice) {
+  if (respondido) return;
+  respondido = true;
+  const q = eixoAtual.questoes[indiceQuestao];
+  const alternativas = document.querySelectorAll('.alternativa');
+  const feedback = document.getElementById('feedback');
+  
+  alternativas.forEach((el, i) => {
+    el.disabled = true;
+    if (i === q.correta) el.classList.add('correta');
+    else if (i === indice && indice !== q.correta) el.classList.add('errada');
+  });
+  
+  if (indice === q.correta) {
+    acertos++;
+    feedback.textContent = '✓ Correto!';
+    feedback.classList.add('certo');
+    tocarSomAcerto();
+  } else {
+    feedback.textContent = 'Incorreto — a resposta certa é a alternativa ' + String.fromCharCode(65 + q.correta) + '.';
+    feedback.classList.add('errado');
+    tocarSomErro();
+  }
+  
+  feedback.style.display = 'block';
+  document.getElementById('btnProxima').style.display = 'block';
+}
+
+function proximaQuestao() {
+  indiceQuestao++;
+  carregarQuestao();
+}
+
+function reiniciarEixo() {
+  if (!eixoAtual) return;
+  indiceQuestao = 0; acertos = 0; respondido = false;
+  irPara('tela3');
+  carregarQuestao();
+}
+
+function mostrarResultado() {
+  document.getElementById('totalAcertos').textContent = acertos;
+  document.getElementById('totalQuestoes').textContent = eixoAtual.questoes.length;
+  const porcentagem = (acertos / eixoAtual.questoes.length) * 100;
+  let msg = '';
+  if (porcentagem === 100) msg = 'Pontuação perfeita — este conteúdo está dominado! 🏆';
+  else if (porcentagem >= 75) msg = 'Ótimo desempenho — você já domina a maior parte do conteúdo.';
+  else if (porcentagem >= 50) msg = 'Bom começo. Revise os pontos em que errou e tente novamente.';
+  else msg = 'Vamos reforçar esse conteúdo — revise e tente de novo, você consegue.';
+  document.getElementById('mensagemFinal').textContent = msg;
+
+  const ring = document.getElementById('scoreRing');
+  const circ = 2 * Math.PI * 68; // 427.3
+  const offset = circ * (1 - porcentagem / 100);
+  document.getElementById('scorePctText').textContent = Math.round(porcentagem) + '%';
+  requestAnimationFrame(() => { ring.style.strokeDashoffset = offset; });
+
+  irPara('tela4');
+}
+</script>
+
+</body>
+</html>
