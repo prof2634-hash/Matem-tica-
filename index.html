@@ -454,14 +454,25 @@ document.getElementById('btnCopiarLink').onclick = () => {
     setTimeout(() => btn.textContent = old, 1500);
   }).catch(() => alert('Não foi possível copiar automaticamente. Copie o link da barra de endereço.'));
 };
-document.getElementById('btnBaixarQR').onclick = () => {
+document.getElementById('btnBaixarQR').onclick = async () => {
   const img = document.getElementById('qrImg');
   if (!img) { alert('Publique esta página on-line primeiro — o QR Code é gerado a partir do link publicado.'); return; }
-  const a = document.createElement('a');
-  a.href = img.src;
-  a.download = 'qrcode-quiz-matematica.png';
-  a.target = '_blank';
-  a.click();
+  try {
+    const response = await fetch(img.src, { mode: 'cors' });
+    if (!response.ok) throw new Error('fetch failed');
+    const blob = await response.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'qrcode-quiz-matematica.png';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 2000);
+  } catch (e) {
+    window.open(img.src, '_blank');
+    alert('Não deu para baixar automaticamente. A imagem abriu em uma nova aba: clique nela com o botão direito e escolha "Salvar imagem como".');
+  }
 };
 
 function atualizarContadores() {
